@@ -15,7 +15,7 @@ const POSTS = [
     readTime: '6 min',
     img: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&q=80',
     excerpt: 'Discovering hidden lochs, ancient castles, and the profound peace of moving at nature\'s pace.',
-    link: 'https://www.visitscotland.com/destinations-maps/highlands/'
+    link: 'https://www.visitscotland.com/travel-planning/responsible-tourism/slow-travel'
   },
   {
     id: 'b2',
@@ -39,7 +39,7 @@ const POSTS = [
     readTime: '5 min',
     img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2000&q=100',
     excerpt: 'The capsule wardrobe for seamlessly transitioning from a superyacht deck to a Michelin-starred dining room.',
-    link: 'https://www.beyond.fr/riviera'
+    link: 'https://finduslost.com/south-of-france-french-riviera-guide/'
   },
   {
     id: 'b4',
@@ -51,7 +51,7 @@ const POSTS = [
     readTime: '8 min',
     img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=2000&q=100',
     excerpt: 'An insider\'s guide to eight-seat omakase counters and multi-generational izakayas only locals know.',
-    link: 'https://www.gotokyo.org/en/'
+    link: 'https://www.gotokyo.org/en/see-and-do/culture/index.html'
   },
   {
     id: 'b5',
@@ -63,7 +63,7 @@ const POSTS = [
     readTime: '7 min',
     img: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=2000&q=100',
     excerpt: 'Escape the summer crowds by taking to the sea. The ultimate itinerary for a week on the Italian Riviera.',
-    link: 'https://www.amalficoast.it/en/'
+    link: 'https://jasondanielshaw.com/blog/the-most-beautiful-place-in-italy-amalfi-coast'
   },
   {
     id: 'b6',
@@ -75,7 +75,7 @@ const POSTS = [
     readTime: '5 min',
     img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=2000&q=100',
     excerpt: 'From digital detoxes in the Himalayas to Ayurvedic immersions in Kerala, retreats that transform.',
-    link: 'https://www.keralatourism.org/'
+    link: 'https://www.keralatourism.org/ayurveda-centres'
   },
   {
     id: 'b7',

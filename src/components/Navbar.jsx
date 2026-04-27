@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { 
+  FiChevronDown,
+  FiUser,
+  FiGrid,
+  FiHeart,
+  FiClipboard,
+  FiSettings,
+  FiLogOut
+} from 'react-icons/fi';
 
 // Individual nav link component
-const NavLink = ({ link, isActive, navigate }) => {
+const NavLink = ({ link, isActive, scrolled, navigate }) => {
   const [hovered, setHovered] = useState(false);
   return (
     <button
@@ -18,12 +27,10 @@ const NavLink = ({ link, isActive, navigate }) => {
         fontWeight: '500',
         letterSpacing: '0.12em',
         fontFamily: 'Inter, sans-serif',
-        color: isActive
-          ? 'white'
-          : hovered
-          ? 'white'
-          : 'rgba(255,255,255,0.55)',
-        transition: 'color 0.2s ease',
+        color: scrolled
+          ? (isActive ? '#1a1a1a' : hovered ? '#1a1a1a' : 'rgba(0,0,0,0.65)')
+          : (isActive ? 'white' : hovered ? 'white' : 'rgba(255,255,255,0.85)'),
+        transition: 'all 0.3s ease',
         padding: '4px 0',
         position: 'relative',
         whiteSpace: 'nowrap'
@@ -45,124 +52,239 @@ const NavLink = ({ link, isActive, navigate }) => {
   );
 };
 
-// User avatar pill component
-const UserPill = ({ 
-  avatarUrl, initial, 
-  firstName, onClick 
+// Dropdown Item Component
+const DropdownItem = ({
+  icon: Icon, label, onClick,
+  isSignOut = false
 }) => {
   const [hovered, setHovered] = useState(false);
+
   return (
     <div
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
+        borderRadius: '10px',
+        padding: '11px 14px',
         display: 'flex',
         alignItems: 'center',
-        gap: '8px',
+        gap: '14px',
         cursor: 'pointer',
-        padding: '4px 12px 4px 4px',
-        borderRadius: '999px',
-        border: hovered
-          ? '1px solid #C9A84C'
-          : '1px solid rgba(255,255,255,0.15)',
-        background: 'rgba(255,255,255,0.06)',
-        transition: 'all 0.2s ease'
+        transition: 'all 0.15s ease',
+        background: hovered
+          ? isSignOut
+            ? 'rgba(239,68,68,0.06)'
+            : 'rgba(201,168,76,0.06)'
+          : 'transparent'
       }}
     >
-      {/* Avatar */}
-      {avatarUrl ? (
-        <img
-          src={avatarUrl}
-          alt={firstName}
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '50%',
-            objectFit: 'cover',
-            border: '1.5px solid #C9A84C'
-          }}
-          onError={(e) => {
-            e.target.style.display = 'none';
-          }}
-        />
-      ) : (
-        <div style={{
-          width: '28px',
-          height: '28px',
-          borderRadius: '50%',
-          background: '#C9A84C',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '12px',
-          fontWeight: '600',
-          fontFamily: 'Inter, sans-serif',
-          flexShrink: 0
-        }}>
-          {initial}
-        </div>
-      )}
-
-      {/* Name */}
+      {/* Icon */}
       <span style={{
-        fontSize: '12px',
-        fontWeight: '400',
-        color: 'white',
-        fontFamily: 'Inter, sans-serif',
-        letterSpacing: '0.02em',
-        maxWidth: '80px',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
+        fontSize: '16px',
+        width: '20px',
+        textAlign: 'center',
+        flexShrink: 0,
+        opacity: hovered ? 1 : 0.75,
+        transition: 'opacity 0.15s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: hovered
+          ? isSignOut
+            ? '#ef4444'
+            : '#C9A84C'
+          : isSignOut
+          ? '#ef4444'
+          : '#7a7a7a'
       }}>
-        {firstName}
+        {Icon && <Icon />}
       </span>
+
+      {/* Label */}
+      <span style={{
+        fontSize: '13px',
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '300',
+        letterSpacing: '0.01em',
+        transition: 'color 0.15s ease',
+        color: hovered
+          ? isSignOut
+            ? '#ef4444'
+            : '#C9A84C'
+          : isSignOut
+          ? '#ef4444'
+          : '#3a3a3a'
+      }}>
+        {label}
+      </span>
+
+      {/* Arrow on hover */}
+      {!isSignOut && hovered && (
+        <span style={{
+          marginLeft: 'auto',
+          fontSize: '11px',
+          color: '#C9A84C',
+          opacity: 0.7
+        }}>
+          →
+        </span>
+      )}
     </div>
   );
 };
 
-// Small text button component
-const NavTextButton = ({ 
-  label, onClick, 
-  color, hoverColor, icon 
+// User Dropdown Component
+const UserDropdown = ({
+  user, avatarUrl, initial,
+  fullName, onClose,
+  navigate, onSignOut
 }) => {
-  const [hovered, setHovered] = useState(false);
+
+  const menuItems = [
+    { icon: FiUser,      label: 'My Profile',   tab: 'settings'  },
+    { icon: FiGrid,      label: 'Dashboard',    tab: 'overview'  },
+    { icon: FiHeart,     label: 'Wishlist',     tab: 'wishlist'  },
+    { icon: FiClipboard, label: 'My Bookings',  tab: 'bookings'  },
+    { icon: FiSettings,  label: 'Settings',     tab: 'settings'  }
+  ];
+
+  const handleItemClick = (tab) => {
+    navigate('/dashboard', {
+      state: { activeTab: tab }
+    });
+    onClose();
+  };
+
   return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        fontSize: '11px',
-        fontWeight: '400',
-        letterSpacing: '0.1em',
-        fontFamily: 'Inter, sans-serif',
-        color: hovered ? hoverColor : color,
-        transition: 'color 0.2s ease',
+    <div style={{
+      position: 'absolute',
+      top: 'calc(100% + 12px)',
+      right: 0,
+      background: 'white',
+      borderRadius: '18px',
+      border: '1px solid rgba(0,0,0,0.08)',
+      boxShadow:
+        '0 20px 60px rgba(0,0,0,0.14),' +
+        '0 4px 16px rgba(0,0,0,0.06)',
+      minWidth: '230px',
+      padding: '8px',
+      zIndex: 9999,
+      animation: 'dropdownIn 0.2s ease'
+    }}>
+
+      {/* User header */}
+      <div style={{
+        padding: '14px 14px 16px',
+        borderBottom: '1px solid rgba(0,0,0,0.06)',
+        marginBottom: '6px',
         display: 'flex',
         alignItems: 'center',
-        gap: '5px',
-        padding: '4px 0',
-        whiteSpace: 'nowrap'
-      }}
-    >
-      {icon && (
-        <span style={{ fontSize: '13px' }}>
-          {icon}
-        </span>
-      )}
-      {label}
-    </button>
+        gap: '12px'
+      }}>
+        {/* Avatar */}
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt={fullName}
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '2px solid #C9A84C',
+              flexShrink: 0
+            }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        ) : (
+          <div style={{
+            width: '46px',
+            height: '46px',
+            borderRadius: '50%',
+            background: '#C9A84C',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '18px',
+            fontWeight: '600',
+            fontFamily: 'Inter, sans-serif',
+            flexShrink: 0
+          }}>
+            {initial}
+          </div>
+        )}
+
+        {/* Name + email */}
+        <div style={{ 
+          overflow: 'hidden',
+          flex: 1
+        }}>
+          <p style={{
+            fontSize: '15px',
+            fontWeight: '400',
+            color: '#1a1a1a',
+            fontFamily: 'Fraunces, Georgia, serif',
+            marginBottom: '3px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {fullName}
+          </p>
+          <p style={{
+            fontSize: '11px',
+            color: '#9e9e9e',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: '300',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {user?.email}
+          </p>
+        </div>
+      </div>
+
+      {/* Menu items */}
+      <div style={{ padding: '2px 0 4px' }}>
+        {menuItems.map((item) => (
+          <DropdownItem
+            key={item.label}
+            icon={item.icon}
+            label={item.label}
+            onClick={() => handleItemClick(item.tab)}
+          />
+        ))}
+      </div>
+
+      {/* Divider */}
+      <div style={{
+        height: '1px',
+        background: 'rgba(0,0,0,0.06)',
+        margin: '4px 0'
+      }}/>
+
+      {/* Sign out */}
+      <DropdownItem
+        icon={FiLogOut}
+        label="Sign Out"
+        isSignOut={true}
+        onClick={() => {
+          onSignOut();
+          onClose();
+        }}
+      />
+    </div>
   );
 };
 
+
 // Plan a Trip CTA button component
-const PlanATripButton = ({ onClick }) => {
+const PlanATripButton = ({ onClick, scrolled }) => {
   const [hovered, setHovered] = useState(false);
   return (
     <button
@@ -171,20 +293,21 @@ const PlanATripButton = ({ onClick }) => {
       onMouseLeave={() => setHovered(false)}
       style={{
         background: hovered
-          ? '#C9A84C' : '#1a1a1a',
+          ? (scrolled ? '#C9A84C' : 'rgba(255,255,255,0.12)')
+          : 'transparent',
         color: 'white',
         border: hovered
-          ? '1px solid #C9A84C'
-          : '1px solid rgba(255,255,255,0.1)',
+          ? (scrolled ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.5)')
+          : '1px solid transparent',
         borderRadius: '999px',
         padding: '10px 22px',
         fontSize: '11px',
         fontWeight: '500',
-        letterSpacing: '0.1em',
+        letterSpacing: '0.12em',
         fontFamily: 'Inter, sans-serif',
         cursor: 'pointer',
         whiteSpace: 'nowrap',
-        transition: 'all 0.25s ease',
+        transition: 'all 0.3s ease',
         display: 'flex',
         alignItems: 'center',
         gap: '6px'
@@ -193,6 +316,7 @@ const PlanATripButton = ({ onClick }) => {
       PLAN A TRIP
       <span style={{ fontSize: '12px' }}>→</span>
     </button>
+
   );
 };
 
@@ -200,6 +324,28 @@ const Navbar = () => {
   const { user, signOut, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const [scrolled, setScrolled] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
   const firstName = fullName.split(' ')[0];
@@ -227,18 +373,21 @@ const Navbar = () => {
 
   return (
     <nav style={{
-      position: 'sticky',
+      position: 'fixed',
       top: 0,
+      left: 0,
+      right: 0,
       zIndex: 999,
-      background: 'rgba(15,15,15,0.95)',
-      backdropFilter: 'blur(12px)',
-      borderBottom: '1px solid rgba(255,255,255,0.06)',
-      padding: '0 40px',
       height: '64px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: '16px'
+      padding: '0 48px',
+      transition: 'all 0.3s ease',
+      background: scrolled ? 'rgba(250,249,246,0.96)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(12px)' : 'none',
+      borderBottom: scrolled ? '1px solid rgba(0,0,0,0.07)' : 'none',
+      boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.06)' : 'none'
     }}>
 
       {/* ── LEFT: LOGO ── */}
@@ -252,17 +401,17 @@ const Navbar = () => {
           flexShrink: 0
         }}
       >
-        {/* Compass icon */}
         <div style={{
           width: '32px',
           height: '32px',
           borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.3)',
+          border: scrolled ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.3)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
-          fontSize: '14px'
+          color: scrolled ? '#1a1a1a' : 'white',
+          fontSize: '14px',
+          transition: 'all 0.3s ease'
         }}>
           ⊕
         </div>
@@ -270,9 +419,10 @@ const Navbar = () => {
           fontFamily: 'Fraunces, Georgia, serif',
           fontSize: '18px',
           fontWeight: '400',
-          color: 'white',
+          color: scrolled ? '#1a1a1a' : 'white',
           whiteSpace: 'nowrap',
-          letterSpacing: '-0.01em'
+          letterSpacing: '-0.01em',
+          transition: 'all 0.3s ease'
         }}>
           Compass & Co.
         </span>
@@ -291,6 +441,7 @@ const Navbar = () => {
             key={link.path}
             link={link}
             isActive={isActive(link.path)}
+            scrolled={scrolled}
             navigate={navigate}
           />
         ))}
@@ -300,60 +451,147 @@ const Navbar = () => {
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '12px',
+        gap: '16px',
         flexShrink: 0
       }}>
         {isAuthenticated ? (
-          /* ── LOGGED IN ── */
-          <>
-            {/* User pill: avatar + name */}
-            <UserPill
-              avatarUrl={avatarUrl}
-              initial={initial}
-              firstName={firstName}
-              onClick={() => navigate('/dashboard')}
-            />
+          <div ref={dropdownRef} style={{ position: 'relative' }}>
+            {/* Clickable pill */}
+            <div
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+                padding: '5px 12px 5px 5px',
+                borderRadius: '999px',
+                border: dropdownOpen
+                  ? (scrolled ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.4)')
+                  : '1px solid transparent',
+                background: dropdownOpen
+                  ? (scrolled ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.15)')
+                  : 'transparent',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (!dropdownOpen) {
+                  if (scrolled) {
+                    e.currentTarget.style.borderColor = '#C9A84C';
+                    e.currentTarget.style.background = 'rgba(201,168,76,0.06)';
+                  } else {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+                  }
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!dropdownOpen) {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.borderColor = 'transparent';
+                }
+              }}
 
-            {/* Dashboard link */}
-            <NavTextButton
-              label="Dashboard"
-              onClick={() => navigate('/dashboard')}
-              color="rgba(255,255,255,0.7)"
-              hoverColor="#C9A84C"
-            />
+            >
+              {/* Avatar */}
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={firstName}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '1.5px solid #C9A84C'
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: '#C9A84C',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  fontFamily: 'Inter, sans-serif',
+                  flexShrink: 0
+                }}>
+                  {initial}
+                </div>
+              )}
 
-            {/* Divider */}
-            <div style={{
-              width: '1px',
-              height: '14px',
-              background: 'rgba(255,255,255,0.15)'
-            }}/>
+              {/* Name */}
+              <span style={{
+                fontSize: '12px',
+                fontWeight: '400',
+                color: scrolled ? '#1a1a1a' : 'white',
+                fontFamily: 'Inter, sans-serif',
+                letterSpacing: '0.02em',
+                maxWidth: '80px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.3s ease'
+              }}>
+                {firstName}
+              </span>
 
-            {/* Sign out */}
-            <NavTextButton
-              label="Sign out"
-              onClick={handleSignOut}
-              color="rgba(255,255,255,0.4)"
-              hoverColor="#ef4444"
-            />
-          </>
+              {/* Chevron */}
+              <FiChevronDown style={{
+                fontSize: '14px',
+                color: scrolled ? '#6b6b6b' : 'rgba(255,255,255,0.6)',
+                transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.2s ease',
+                marginLeft: '-2px'
+              }} />
+            </div>
+
+            {/* Dropdown */}
+            {dropdownOpen && (
+              <UserDropdown
+                user={user}
+                avatarUrl={avatarUrl}
+                initial={initial}
+                fullName={fullName}
+                onClose={() => setDropdownOpen(false)}
+                navigate={navigate}
+                onSignOut={handleSignOut}
+              />
+            )}
+          </div>
         ) : (
-          /* ── LOGGED OUT ── */
-          <>
-            {/* Login */}
-            <NavTextButton
-              label="Login"
-              onClick={() => navigate('/login')}
-              color="rgba(255,255,255,0.65)"
-              hoverColor="white"
-              icon="👤"
-            />
-          </>
+          <button
+            onClick={() => navigate('/login')}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '11px',
+              fontWeight: '400',
+              letterSpacing: '0.1em',
+              fontFamily: 'Inter, sans-serif',
+              color: scrolled ? '#1a1a1a' : 'rgba(255,255,255,0.65)',
+              transition: 'color 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 0',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            Login
+          </button>
         )}
 
         {/* ── PLAN A TRIP button ── */}
         <PlanATripButton
           onClick={() => navigate('/destinations')}
+          scrolled={scrolled}
         />
       </div>
     </nav>
@@ -361,3 +599,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+

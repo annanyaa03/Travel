@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabase';
 import { 
   FiGrid, 
   FiMap, 
@@ -15,7 +16,10 @@ import {
   FiLogOut, 
   FiChevronRight,
   FiPlusCircle,
-  FiSearch
+  FiSearch,
+  FiCamera,
+  FiAlertCircle,
+  FiCheckCircle
 } from 'react-icons/fi';
 
 // --- SUB-COMPONENTS ---
@@ -171,20 +175,20 @@ const TopBar = ({ greeting, firstName, date }) => (
 const StatCard = ({ icon, label, number, trend }) => (
   <div
     style={{
-      background: 'white',
-      borderRadius: '20px',
-      padding: '28px',
-      border: '1px solid rgba(0,0,0,0.06)',
+      background: 'transparent',
+      borderRadius: '0',
+      padding: '24px',
+      borderBottom: '1px solid rgba(0,0,0,0.08)',
       cursor: 'pointer',
-      transition: 'all 0.3s ease'
+      transition: 'all 0.2s ease'
     }}
     onMouseEnter={(e) => {
-      e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)';
-      e.currentTarget.style.transform = 'translateY(-2px)';
+      e.currentTarget.style.background = 'white';
+      e.currentTarget.style.borderBottomColor = '#C9A84C';
     }}
     onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = 'none';
-      e.currentTarget.style.transform = 'none';
+      e.currentTarget.style.background = 'transparent';
+      e.currentTarget.style.borderBottomColor = 'rgba(0,0,0,0.08)';
     }}
   >
     <div style={{ fontSize: '20px', marginBottom: '16px' }}>{icon}</div>
@@ -195,6 +199,7 @@ const StatCard = ({ icon, label, number, trend }) => (
     </div>
   </div>
 );
+
 
 const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quotes, navigate }) => {
   return (
@@ -257,6 +262,7 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
         <div>
           <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', marginBottom: '24px' }}>Quick Actions</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {/* Quick Action Item */}
             {[
               { icon: <FiSearch />, label: 'Search Flights', path: '/flights' },
               { icon: <FiHome />, label: 'Find Hotels', path: '/hotels' },
@@ -267,27 +273,31 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
                 key={action.label}
                 onClick={() => navigate(action.path)}
                 style={{
-                  background: 'white',
-                  borderRadius: '14px',
-                  padding: '18px 20px',
+                  background: 'transparent',
+                  borderRadius: '0',
+                  padding: '18px 0',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   cursor: 'pointer',
-                  border: '1px solid rgba(0,0,0,0.06)',
-                  transition: 'all 0.25s ease'
+                  borderBottom: '1px solid rgba(0,0,0,0.06)',
+                  transition: 'all 0.2s ease'
                 }}
                 onMouseEnter={(e) => {
+                  e.currentTarget.style.paddingLeft = '12px';
+                  e.currentTarget.style.paddingRight = '12px';
                   e.currentTarget.style.background = '#1a1a1a';
                   e.currentTarget.style.color = 'white';
-                  e.currentTarget.style.borderColor = '#1a1a1a';
                   e.currentTarget.querySelector('.arrow').style.color = '#C9A84C';
+                  e.currentTarget.querySelector('.arrow').style.transform = 'translateX(4px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'white';
+                  e.currentTarget.style.paddingLeft = '0';
+                  e.currentTarget.style.paddingRight = '0';
+                  e.currentTarget.style.background = 'transparent';
                   e.currentTarget.style.color = '#1a1a1a';
-                  e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)';
                   e.currentTarget.querySelector('.arrow').style.color = '#9e9e9e';
+                  e.currentTarget.querySelector('.arrow').style.transform = 'translateX(0)';
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -297,6 +307,7 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
                 <span className="arrow" style={{ color: '#9e9e9e', transition: 'all 0.2s ease' }}><FiChevronRight /></span>
               </div>
             ))}
+
           </div>
         </div>
       </div>
@@ -304,7 +315,28 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
       {/* Recent Activity & Quote */}
       <div style={{ display: 'grid', gridTemplateColumns: '6fr 4fr', gap: '48px' }}>
         {/* Recent Activity */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px', background: 'white', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.06)' }}>
+        <div 
+          style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            padding: '64px', 
+            background: 'transparent', 
+            borderRadius: '0', 
+            border: '1px solid rgba(0,0,0,0.08)',
+            transition: 'all 0.3s ease',
+            cursor: 'default'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#C9A84C';
+            e.currentTarget.style.background = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(0,0,0,0.08)';
+            e.currentTarget.style.background = 'transparent';
+          }}
+        >
           <div style={{ marginBottom: '24px' }}><FiNavigation size={48} color="#C9A84C" /></div>
           <h3 style={{ fontFamily: 'Fraunces, serif', fontSize: '18px', color: '#4a4a4a', margin: '0 0 12px' }}>Your journey begins here</h3>
           <p style={{ color: '#9e9e9e', fontSize: '13px', margin: 0, textAlign: 'center', maxWidth: '280px' }}>
@@ -312,8 +344,10 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
           </p>
         </div>
 
+
         {/* Travel Quote */}
-        <div style={{ background: '#0f0f0f', borderRadius: '20px', padding: '36px 32px', position: 'relative', overflow: 'hidden', minHeight: '260px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{ background: '#0f0f0f', borderRadius: '0', padding: '36px 32px', position: 'relative', overflow: 'hidden', minHeight: '260px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+
           <div style={{ transition: 'opacity 0.5s ease', opacity: 1 }}>
             <blockquote style={{ margin: 0, fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: '300', fontStyle: 'italic', color: 'white', lineHeight: '1.6', marginBottom: '20px' }}>
               "{quotes[currentQuote].text}"
@@ -334,6 +368,12 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
 };
 
 const SettingsTab = ({ user, avatarUrl, initials, fullName, activeToggles, setActiveToggles, onSignOut }) => {
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState('');
+  const [localAvatar, setLocalAvatar] = useState(avatarUrl || null);
+  const fileInputRef = useRef(null);
+
   const toggleItem = (key) => {
     setActiveToggles(prev => ({ ...prev, [key]: !prev[key] }));
   };
@@ -342,22 +382,277 @@ const SettingsTab = ({ user, avatarUrl, initials, fullName, activeToggles, setAc
     return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      setUploadError('Please select a JPG, PNG, or WebP image');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Image must be smaller than 5MB');
+      return;
+    }
+
+    setUploadLoading(true);
+    setUploadError('');
+    setUploadSuccess('');
+
+    try {
+      // Show preview immediately
+      const preview = URL.createObjectURL(file);
+      setLocalAvatar(preview);
+
+      // Create unique filename
+      const fileExt = file.name.split('.').pop().toLowerCase();
+      const fileName = `avatar_${user.id}_${Date.now()}.${fileExt}`;
+
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadErr } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadErr) throw uploadErr;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      const publicUrl = urlData.publicUrl;
+
+      // Update Supabase Auth user metadata
+      const { error: updateErr } = await supabase.auth.updateUser({
+        data: {
+          avatar_url: publicUrl,
+          full_name: user?.user_metadata?.full_name
+        }
+      });
+
+      if (updateErr) throw updateErr;
+
+      // Update local state
+      setLocalAvatar(publicUrl);
+      setUploadSuccess('Profile photo updated!');
+
+      // Clear success after 3 seconds
+      setTimeout(() => {
+        setUploadSuccess('');
+      }, 3000);
+
+
+      // Refresh session to get new avatar
+      await supabase.auth.refreshSession();
+
+    } catch (err) {
+      console.error('Upload error:', err);
+      setUploadError(err.message || 'Upload failed. Try again.');
+      // Revert preview on error
+      setLocalAvatar(avatarUrl || null);
+    } finally {
+      setUploadLoading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Profile Section */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '32px', border: '1px solid rgba(0,0,0,0.06)' }}>
         <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', marginBottom: '32px' }}>Profile Details</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-          <div style={{ textAlign: 'center' }}>
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="Profile" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }} />
-            ) : (
-              <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#C9A84C', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '600', color: 'white' }}>
-                {initials}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            {/* ── AVATAR CIRCLE (clickable) ── */}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              style={{
+                position: 'relative',
+                width: '90px',
+                height: '90px',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                flexShrink: 0
+              }}
+            >
+              {/* Avatar image or initial */}
+              {localAvatar || avatarUrl ? (
+                <img
+                  src={localAvatar || avatarUrl}
+                  alt={fullName}
+                  style={{
+                    width: '90px',
+                    height: '90px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '3px solid #C9A84C',
+                    display: 'block'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: '90px',
+                  height: '90px',
+                  borderRadius: '50%',
+                  background: '#C9A84C',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '32px',
+                  fontWeight: '600',
+                  fontFamily: 'Inter, sans-serif',
+                  border: '3px solid #C9A84C'
+                }}>
+                  {initials}
+                </div>
+              )}
+
+              {/* Hover overlay with camera icon */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: '50%',
+                  background: 'rgba(0,0,0,0.45)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: uploadLoading ? 1 : 0,
+                  transition: 'opacity 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (!uploadLoading) e.currentTarget.style.opacity = '1';
+                }}
+                onMouseLeave={(e) => {
+                  if (!uploadLoading) e.currentTarget.style.opacity = '0';
+                }}
+              >
+                {uploadLoading ? (
+                  /* Loading spinner */
+                  <div style={{
+                    width: '24px',
+                    height: '24px',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderTop: '2px solid white',
+                    borderRadius: '50%',
+                    animation: 'spin 0.8s linear infinite'
+                  }}/>
+                ) : (
+                  /* Camera icon */
+                  <>
+                    <FiCamera style={{ fontSize: '20px', color: 'white', marginBottom: '2px' }} />
+                    <span style={{
+                      fontSize: '9px',
+                      color: 'white',
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: '500',
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase'
+                    }}>Change</span>
+                  </>
+                )}
+
               </div>
+            </div>
+
+            {/* ── HIDDEN FILE INPUT ── */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+              onChange={handleAvatarUpload}
+              style={{ display: 'none' }}
+            />
+
+            {/* ── EDIT PHOTO BUTTON (clickable) ── */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadLoading}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: uploadLoading ? 'not-allowed' : 'pointer',
+                fontSize: '12px',
+                color: uploadLoading ? '#b0b0b0' : '#9e9e9e',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '400',
+                letterSpacing: '0.02em',
+                padding: '2px 0',
+                transition: 'color 0.2s ease',
+                textDecoration: 'underline',
+                textUnderlineOffset: '3px',
+                textDecorationColor: 'rgba(0,0,0,0.2)'
+              }}
+              onMouseEnter={(e) => {
+                if (!uploadLoading) e.currentTarget.style.color = '#C9A84C';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#9e9e9e';
+              }}
+            >
+              {uploadLoading ? 'Uploading...' : 'Edit Photo'}
+            </button>
+
+            {/* ── SUCCESS MESSAGE ── */}
+            {uploadSuccess && (
+              <p style={{
+                fontSize: '12px',
+                color: '#16a34a',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '400',
+                textAlign: 'center',
+                animation: 'fadeIn 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                justifyContent: 'center'
+              }}>
+                <FiCheckCircle size={14} /> {uploadSuccess}
+              </p>
             )}
-            <button style={{ background: 'none', border: 'none', color: '#9e9e9e', fontSize: '12px', marginTop: '12px', cursor: 'pointer' }}>Edit Photo</button>
+
+
+            {/* ── ERROR MESSAGE ── */}
+            {uploadError && (
+              <p style={{
+                fontSize: '12px',
+                color: '#dc2626',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '300',
+                textAlign: 'center',
+                maxWidth: '160px',
+                lineHeight: '1.4',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                justifyContent: 'center'
+              }}>
+                <FiAlertCircle size={14} /> {uploadError}
+              </p>
+            )}
+
           </div>
+
           <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             <div>
               <div style={{ fontSize: '10px', color: '#9e9e9e', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '6px' }}>Full Name</div>
@@ -504,7 +799,12 @@ const fallbackDestinations = [
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const location = useLocation();
+  
+  const [activeTab, setActiveTab] = useState(
+    location.state?.activeTab || 'overview'
+  );
+  
   const [destinations, setDestinations] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [wishlist, setWishlist] = useState([]);
@@ -515,6 +815,15 @@ const Dashboard = () => {
     newsletter: false,
     priceAlerts: true
   });
+
+  // Handle navigation to dashboard when already ON dashboard or from outside
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+      // Clear the state so back button works correctly without re-triggering the tab
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Get user info
   const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Traveller';
@@ -571,6 +880,7 @@ const Dashboard = () => {
     await signOut();
     navigate('/');
   };
+
 
   return (
     <div style={{ 

@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import pino from 'pino-http';
 import routes from './routes/index.js';
+import aiRoutes from './routes/ai.routes.js';
 
 const app = express();
 
@@ -53,6 +54,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 6. Routes
 app.use('/api', routes);
+app.use('/api/ai', aiRoutes);
 
 // Root route for testing
 app.get('/', (req, res) => {

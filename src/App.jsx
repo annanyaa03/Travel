@@ -10,7 +10,7 @@ import HotelDetail from './pages/HotelDetail';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import AuthCallback from './pages/AuthCallback';
-import AIChatbot from './components/AIChatbot';
+
 import ScrollToTop from './components/ScrollToTop';
 import ConciergePlanner from './pages/ConciergePlanner';
 import About from './pages/About';
@@ -62,7 +62,7 @@ function AppContent() {
       </Routes>
 
       {showFooter && <Footer />}
-      <AIChatbot />
+
     </div>
   );
 }

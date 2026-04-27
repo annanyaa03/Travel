@@ -403,7 +403,7 @@ export const articles = [
     author: 'Sarah Jenkins',
     authorAvatar: 'https://i.pravatar.cc/150?u=sarah',
     date: 'Mar 12, 2026',
-    link: 'https://www.lonelyplanet.com/articles/hidden-gems-southeast-asia'
+    link: 'https://www.sandinmyshoe.com/asia/southeast-asia-places-to-go/'
   },
   {
     id: 2,
@@ -414,7 +414,7 @@ export const articles = [
     author: 'Marcus Chen',
     authorAvatar: 'https://i.pravatar.cc/150?u=marcus',
     date: 'Mar 10, 2026',
-    link: 'https://www.vogue.com/article/what-to-pack-for-bali'
+    link: 'https://bali.com/bali/travel-guide/practical-tips-must-know/packing-list-suitcase/'
   },
   {
     id: 3,
@@ -425,7 +425,7 @@ export const articles = [
     author: 'Aria Thorne',
     authorAvatar: 'https://i.pravatar.cc/150?u=aria',
     date: 'Mar 08, 2026',
-    link: 'https://www.travelandleisure.com/trip-ideas/food-drink-travel/best-street-food-cities'
+    link: 'https://foodiejapan.com/tokyo/tokyo-street-food-markets/'
   }
 ];
 

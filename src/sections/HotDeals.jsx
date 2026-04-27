@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { deals } from '../data';
 import './HotDeals.css';
 
+const dealLinks = {
+  1: "https://www.intrepidtravel.com/en/bali",
+  2: "https://www.santorini.net/",
+  3: "https://en.parisinfo.com/"
+};
+
 export default function HotDeals() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
@@ -28,47 +34,58 @@ export default function HotDeals() {
 
         <div className={`story-grid ${isVisible ? 'animate-up' : ''}`}>
           {deals.map((deal) => (
-            <div key={deal.id} className="story-card-wrap">
-              <div className="story-card-image-area">
-                <img 
-                  src={deal.image} 
-                  alt={deal.name} 
-                  className="story-img active" 
-                />
-                
-                {/* Progress Indicator (Single Line) */}
-                <div className="story-progress-bg">
-                  <div className="progress-segment">
-                    <div className="segment-fill filled"></div>
+            <a 
+              key={deal.id} 
+              href={dealLinks[deal.id]} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="story-card-anchor"
+              style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+            >
+              <div className="story-card-wrap">
+                <div className="story-card-image-area">
+                  <img 
+                    src={deal.image} 
+                    alt={deal.name} 
+                    className="story-img active" 
+                  />
+                  
+                  {/* Progress Indicator (Single Line) */}
+                  <div className="story-progress-bg">
+                    <div className="progress-segment">
+                      <div className="segment-fill filled"></div>
+                    </div>
+                  </div>
+
+                  {/* Top Overlays */}
+                  <div className="story-top-pills">
+                    <div className="story-pill-country">
+                      <span className="flag-icon">
+                        {deal.country === 'Indonesia' ? '🇮🇩' : (deal.country === 'Greece' ? '🇬🇷' : '🇫🇷')}
+                      </span>
+                      {deal.country}
+                    </div>
+                    <div className="story-pill-rating">4.9 ★</div>
+                  </div>
+
+                  {/* Bottom Overlay CTA */}
+                  <div className="story-cta-overlay">
+                    <div className="story-view-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      View Tour
+                    </div>
                   </div>
                 </div>
 
-                {/* Top Overlays */}
-                <div className="story-top-pills">
-                  <div className="story-pill-country">
-                    <span className="flag-icon">
-                      {deal.country === 'Indonesia' ? '🇮🇩' : (deal.country === 'Greece' ? '🇬🇷' : '🇫🇷')}
-                    </span>
-                    {deal.country}
-                  </div>
-                  <div className="story-pill-rating">4.9 ★</div>
-                </div>
-
-                {/* Bottom Overlay CTA */}
-                <div className="story-cta-overlay">
-                  <button className="story-view-btn">View Tour</button>
+                <div className="story-card-content">
+                  <h3 className="story-card-title">{deal.name}</h3>
+                  <p className="story-card-desc">
+                    {deal.id === 1 && "Experience the cool breeze of rolling emerald tea plantations and misty mossy forests. A serene escape into the lush heart of Malaysia's ancient highlands."}
+                    {deal.id === 2 && "Gaze up at the world's tallest twin structures, where modern engineering meets traditional Islamic motifs. Experience the breathtaking skybridge walk."}
+                    {deal.id === 3 && "Wander through the cobbled streets of Montmartre, witness the glow of the Eiffel Tower at dusk, and cruise along the Seine. A timeless journey of art and passion."}
+                  </p>
                 </div>
               </div>
-
-              <div className="story-card-content">
-                <h3 className="story-card-title">{deal.name}</h3>
-                <p className="story-card-desc">
-                  {deal.id === 1 && "Experience the cool breeze of rolling emerald tea plantations and misty mossy forests. A serene escape into the lush heart of Malaysia's ancient highlands."}
-                  {deal.id === 2 && "Gaze up at the world's tallest twin structures, where modern engineering meets traditional Islamic motifs. Experience the breathtaking skybridge walk."}
-                  {deal.id === 3 && "Wander through the cobbled streets of Montmartre, witness the glow of the Eiffel Tower at dusk, and cruise along the Seine. A timeless journey of art and passion."}
-                </p>
-              </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
