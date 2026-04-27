@@ -16,23 +16,7 @@ const values = [
   },
 ];
 
-const team = [
-  {
-    name: 'Elena Rossi',
-    role: 'Founder & Chief Executive',
-    bio: 'A former UN travel delegate with fifteen years crafting bespoke itineraries across six continents. Elena founded Compass & Co. on the belief that great travel begins with great listening.',
-  },
-  {
-    name: 'Arjun Mehta',
-    role: 'Head of Experiences',
-    bio: 'An expedition leader turned curator, Arjun brings deep field expertise in adventure, culture, and remote destination access to every journey we design.',
-  },
-  {
-    name: 'Camille Dubois',
-    role: 'Creative Director',
-    bio: 'Trained in visual communication in Paris, Camille ensures that every Compass & Co. journey tells a coherent, beautiful story — before, during, and after.',
-  },
-];
+
 
 export default function AboutNew() {
   return (
@@ -62,20 +46,7 @@ export default function AboutNew() {
           ))}
         </section>
 
-        <hr className="fp-divider" />
 
-        <section className="fp-section" aria-labelledby="team-heading">
-          <h2 className="fp-h2" id="team-heading">Our Team</h2>
-          {team.map((m) => (
-            <div key={m.name} style={{ marginBottom: '28px' }}>
-              <h3 className="fp-h3">{m.name}</h3>
-              <p style={{ fontSize: '12px', fontWeight: 500, color: '#C9A84C', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>{m.role}</p>
-              <p className="fp-p" style={{ marginBottom: 0 }}>{m.bio}</p>
-            </div>
-          ))}
-        </section>
-
-        <hr className="fp-divider" />
 
         <section className="fp-section" aria-labelledby="reach-heading">
           <h2 className="fp-h2" id="reach-heading">Global Reach</h2>

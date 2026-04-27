@@ -347,6 +347,24 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const SOLID_NAV_ROUTES = [
+    '/about',
+    '/privacy',
+    '/terms',
+    '/help',
+    '/safety',
+    '/press',
+    '/partners',
+    '/careers',
+    '/cookies',
+    '/contact',
+    '/blog',
+    '/experiences'
+  ];
+
+  const isSolidNavRoute = SOLID_NAV_ROUTES.some(route => location.pathname.startsWith(route));
+  const isNavScrolled = scrolled || isSolidNavRoute;
+
   const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
   const firstName = fullName.split(' ')[0];
   const initial = firstName.charAt(0).toUpperCase();
@@ -384,10 +402,10 @@ const Navbar = () => {
       justifyContent: 'space-between',
       padding: '0 48px',
       transition: 'all 0.3s ease',
-      background: scrolled ? 'rgba(250,249,246,0.96)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(0,0,0,0.07)' : 'none',
-      boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.06)' : 'none'
+      background: isNavScrolled ? 'rgba(250,249,246,0.96)' : 'transparent',
+      backdropFilter: isNavScrolled ? 'blur(12px)' : 'none',
+      borderBottom: isNavScrolled ? '1px solid rgba(0,0,0,0.07)' : 'none',
+      boxShadow: isNavScrolled ? '0 2px 20px rgba(0,0,0,0.06)' : 'none'
     }}>
 
       {/* ── LEFT: LOGO ── */}
@@ -409,7 +427,7 @@ const Navbar = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: scrolled ? '#1a1a1a' : 'white',
+          color: isNavScrolled ? '#1a1a1a' : 'white',
           fontSize: '14px',
           transition: 'all 0.3s ease'
         }}>
@@ -419,7 +437,7 @@ const Navbar = () => {
           fontFamily: 'Fraunces, Georgia, serif',
           fontSize: '18px',
           fontWeight: '400',
-          color: scrolled ? '#1a1a1a' : 'white',
+          color: isNavScrolled ? '#1a1a1a' : 'white',
           whiteSpace: 'nowrap',
           letterSpacing: '-0.01em',
           transition: 'all 0.3s ease'
@@ -441,7 +459,7 @@ const Navbar = () => {
             key={link.path}
             link={link}
             isActive={isActive(link.path)}
-            scrolled={scrolled}
+            scrolled={isNavScrolled}
             navigate={navigate}
           />
         ))}
@@ -467,16 +485,16 @@ const Navbar = () => {
                 padding: '5px 12px 5px 5px',
                 borderRadius: '999px',
                 border: dropdownOpen
-                  ? (scrolled ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.4)')
+                  ? (isNavScrolled ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.4)')
                   : '1px solid transparent',
                 background: dropdownOpen
-                  ? (scrolled ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.15)')
+                  ? (isNavScrolled ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.15)')
                   : 'transparent',
                 transition: 'all 0.3s ease'
               }}
               onMouseEnter={(e) => {
                 if (!dropdownOpen) {
-                  if (scrolled) {
+                  if (isNavScrolled) {
                     e.currentTarget.style.borderColor = '#C9A84C';
                     e.currentTarget.style.background = 'rgba(201,168,76,0.06)';
                   } else {
@@ -529,7 +547,7 @@ const Navbar = () => {
               <span style={{
                 fontSize: '12px',
                 fontWeight: '400',
-                color: scrolled ? '#1a1a1a' : 'white',
+                color: isNavScrolled ? '#1a1a1a' : 'white',
                 fontFamily: 'Inter, sans-serif',
                 letterSpacing: '0.02em',
                 maxWidth: '80px',
@@ -544,7 +562,7 @@ const Navbar = () => {
               {/* Chevron */}
               <FiChevronDown style={{
                 fontSize: '14px',
-                color: scrolled ? '#6b6b6b' : 'rgba(255,255,255,0.6)',
+                color: isNavScrolled ? '#6b6b6b' : 'rgba(255,255,255,0.6)',
                 transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 transition: 'transform 0.2s ease',
                 marginLeft: '-2px'
@@ -575,7 +593,7 @@ const Navbar = () => {
               fontWeight: '400',
               letterSpacing: '0.1em',
               fontFamily: 'Inter, sans-serif',
-              color: scrolled ? '#1a1a1a' : 'rgba(255,255,255,0.65)',
+              color: isNavScrolled ? '#1a1a1a' : 'rgba(255,255,255,0.65)',
               transition: 'color 0.2s ease',
               display: 'flex',
               alignItems: 'center',
@@ -591,7 +609,7 @@ const Navbar = () => {
         {/* ── PLAN A TRIP button ── */}
         <PlanATripButton
           onClick={() => navigate('/destinations')}
-          scrolled={scrolled}
+          scrolled={isNavScrolled}
         />
       </div>
     </nav>

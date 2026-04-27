@@ -367,7 +367,7 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
   );
 };
 
-const SettingsTab = ({ user, avatarUrl, initials, fullName, activeToggles, setActiveToggles, onSignOut }) => {
+const SettingsTab = ({ user, avatarUrl, initials, fullName, activeToggles, setActiveToggles, onSignOut, navigate }) => {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState('');
@@ -720,8 +720,8 @@ const SettingsTab = ({ user, avatarUrl, initials, fullName, activeToggles, setAc
       <div style={{ background: 'white', borderRadius: '20px', padding: '32px', border: '1px solid rgba(0,0,0,0.06)' }}>
         <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', marginBottom: '24px' }}>Account</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-          <button style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.1)', background: 'white', fontSize: '13px', cursor: 'pointer' }}>Privacy Policy</button>
-          <button style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.1)', background: 'white', fontSize: '13px', cursor: 'pointer' }}>Terms of Service</button>
+          <button onClick={() => navigate('/privacy')} style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.1)', background: 'white', fontSize: '13px', cursor: 'pointer' }}>Privacy Policy</button>
+          <button onClick={() => navigate('/terms')} style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.1)', background: 'white', fontSize: '13px', cursor: 'pointer' }}>Terms of Service</button>
           <button style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid #ff4444', color: '#ff4444', background: 'white', fontSize: '13px', cursor: 'pointer' }}>Delete Account</button>
           <button onClick={onSignOut} style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid #1a1a1a', background: '#1a1a1a', color: 'white', fontSize: '13px', cursor: 'pointer' }}>Sign Out</button>
         </div>
@@ -1021,6 +1021,7 @@ const Dashboard = () => {
                 activeToggles={activeToggles}
                 setActiveToggles={setActiveToggles}
                 onSignOut={handleSignOut}
+                navigate={navigate}
               />
             )}
           </div>
