@@ -16,7 +16,7 @@
 
 /* ── Top Nav Bar ────────────────────────────── */
 .fp-topnav {
-  display: flex;
+  display: none;
   justify-content: space-between;
   align-items: center;
   padding: 20px 16px;
@@ -72,12 +72,12 @@
 .fp-main {
   max-width: 720px;
   margin: 0 auto;
-  padding: 56px 16px 80px;
+  padding: 100px 16px 60px;
 }
 
 /* ── Page Header ────────────────────────────── */
 .fp-header {
-  margin-bottom: 48px;
+  margin-bottom: 32px;
   padding-bottom: 28px;
   border-bottom: 1px solid #eeeeee;
 }
@@ -113,7 +113,7 @@
 
 /* ── Sections ───────────────────────────────── */
 .fp-section {
-  margin-bottom: 44px;
+  margin-bottom: 32px;
 }
 
 .fp-h2 {
@@ -149,7 +149,7 @@
 .fp-divider {
   border: none;
   border-top: 1px solid #eeeeee;
-  margin: 40px 0;
+  margin: 24px 0;
 }
 
 /* ── List Styles ────────────────────────────── */

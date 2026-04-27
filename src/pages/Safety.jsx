@@ -43,10 +43,7 @@ const govLinks = [
 export default function Safety() {
   return (
     <div className="fp-page">
-      <nav className="fp-topnav" aria-label="Page navigation">
-        <Link to="/" className="fp-brand">Compass &amp; Co.</Link>
-        <Link to="/" className="fp-back-link">Back to Home</Link>
-      </nav>
+
 
       <main className="fp-main" id="main-content">
         <header className="fp-header">
