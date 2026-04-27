@@ -1,0 +1,733 @@
+/* ============================================
+   FOOTER PAGES — SHARED STYLES
+   Compass & Co. | Minimal, Elegant, Professional
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+/* ── Reset & Base ───────────────────────────── */
+.fp-page {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #ffffff;
+  color: #222222;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top Nav Bar ────────────────────────────── */
+.fp-topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 16px;
+  max-width: 720px;
+  margin: 0 auto;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.fp-brand {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #222222;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.fp-brand:hover {
+  color: #C9A84C;
+}
+
+.fp-back-link {
+  font-size: 13px;
+  font-weight: 400;
+  color: #888888;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.fp-back-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #C9A84C;
+  transition: width 0.25s ease;
+}
+
+.fp-back-link:hover {
+  color: #C9A84C;
+}
+
+.fp-back-link:hover::after {
+  width: 100%;
+}
+
+/* ── Main Content ───────────────────────────── */
+.fp-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 56px 16px 80px;
+}
+
+/* ── Page Header ────────────────────────────── */
+.fp-header {
+  margin-bottom: 48px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.fp-category {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #aaaaaa;
+  margin-bottom: 12px;
+}
+
+.fp-h1 {
+  font-size: clamp(26px, 5vw, 36px);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C9A84C;
+  margin: 0 0 16px;
+  line-height: 1.15;
+}
+
+.fp-lead {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #555555;
+  margin: 0;
+  max-width: 640px;
+  text-align: justify;
+}
+
+/* ── Sections ───────────────────────────────── */
+.fp-section {
+  margin-bottom: 44px;
+}
+
+.fp-h2 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C9A84C;
+  margin: 0 0 16px;
+}
+
+.fp-h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0 0 8px;
+  letter-spacing: 0.02em;
+}
+
+.fp-p {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #444444;
+  margin: 0 0 16px;
+  text-align: justify;
+}
+
+.fp-p:last-child {
+  margin-bottom: 0;
+}
+
+.fp-divider {
+  border: none;
+  border-top: 1px solid #eeeeee;
+  margin: 40px 0;
+}
+
+/* ── List Styles ────────────────────────────── */
+.fp-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.fp-list li {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #444444;
+  padding: 6px 0 6px 18px;
+  position: relative;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.fp-list li:last-child {
+  border-bottom: none;
+}
+
+.fp-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: #C9A84C;
+  font-weight: 400;
+}
+
+/* ── Inline Links ───────────────────────────── */
+.fp-link {
+  color: #222222;
+  text-decoration: none;
+  font-weight: 400;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.fp-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #C9A84C;
+  transition: width 0.25s ease;
+}
+
+.fp-link:hover {
+  color: #C9A84C;
+}
+
+.fp-link:hover::after {
+  width: 100%;
+}
+
+/* ── Contact Info ───────────────────────────── */
+.fp-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.fp-contact-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 15px;
+  font-weight: 300;
+  color: #444444;
+}
+
+.fp-contact-label {
+  font-weight: 500;
+  color: #222222;
+  min-width: 60px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  padding-top: 1px;
+}
+
+/* ── Contact Form ───────────────────────────── */
+.fp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.fp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fp-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #888888;
+}
+
+.fp-input,
+.fp-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: #222222;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+.fp-input:focus,
+.fp-textarea:focus {
+  border-color: #C9A84C;
+}
+
+.fp-input::placeholder,
+.fp-textarea::placeholder {
+  color: #bbbbbb;
+  font-weight: 300;
+}
+
+.fp-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.fp-input.error,
+.fp-textarea.error {
+  border-color: #cc4444;
+}
+
+.fp-error-msg {
+  font-size: 12px;
+  color: #cc4444;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.fp-btn {
+  align-self: flex-start;
+  padding: 12px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C9A84C;
+  background: #ffffff;
+  border: 1px solid #C9A84C;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.22s ease, color 0.22s ease;
+  outline: none;
+}
+
+.fp-btn:hover {
+  background: #C9A84C;
+  color: #ffffff;
+}
+
+.fp-btn:focus-visible {
+  outline: 2px solid #C9A84C;
+  outline-offset: 3px;
+}
+
+.fp-success-msg {
+  font-size: 14px;
+  font-weight: 400;
+  color: #2e7d5a;
+  background: #f0faf5;
+  border: 1px solid #b8e0cb;
+  padding: 12px 16px;
+  letter-spacing: 0.02em;
+}
+
+/* ── FAQ Accordion ──────────────────────────── */
+.fp-faq-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.fp-faq-item {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.fp-faq-item:first-child {
+  border-top: 1px solid #eeeeee;
+}
+
+.fp-faq-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #222222;
+  text-align: left;
+  transition: color 0.2s ease;
+  outline: none;
+  gap: 12px;
+}
+
+.fp-faq-btn:hover {
+  color: #C9A84C;
+}
+
+.fp-faq-btn:focus-visible {
+  outline: 2px solid #C9A84C;
+  outline-offset: 2px;
+}
+
+.fp-faq-icon {
+  font-size: 18px;
+  font-weight: 300;
+  color: #C9A84C;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+  line-height: 1;
+}
+
+.fp-faq-icon.open {
+  transform: rotate(45deg);
+}
+
+.fp-faq-answer {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease, padding 0.25s ease;
+}
+
+.fp-faq-answer.open {
+  max-height: 400px;
+}
+
+.fp-faq-answer-inner {
+  padding: 0 0 20px;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #555555;
+}
+
+/* ── Press Citations ────────────────────────── */
+.fp-press-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.fp-press-item {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  border-bottom: 1px solid #eeeeee;
+  gap: 4px;
+}
+
+.fp-press-item:first-child {
+  border-top: 1px solid #eeeeee;
+}
+
+.fp-press-outlet {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C9A84C;
+}
+
+.fp-press-headline {
+  font-size: 15px;
+  font-weight: 400;
+  color: #222222;
+  text-decoration: none;
+  line-height: 1.5;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.fp-press-headline::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #C9A84C;
+  transition: width 0.25s ease;
+}
+
+.fp-press-headline:hover {
+  color: #C9A84C;
+}
+
+.fp-press-headline:hover::after {
+  width: 100%;
+}
+
+.fp-press-date {
+  font-size: 12px;
+  color: #aaaaaa;
+  font-weight: 300;
+}
+
+/* ── Partners Grid ──────────────────────────── */
+.fp-partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+}
+
+.fp-partner-item {
+  padding: 24px 20px;
+  border: 1px solid #eeeeee;
+  margin: -1px 0 0 -1px;
+}
+
+.fp-partner-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.fp-partner-type {
+  font-size: 12px;
+  font-weight: 300;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Careers Openings ───────────────────────── */
+.fp-job-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.fp-job-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid #eeeeee;
+  gap: 16px;
+  text-decoration: none;
+}
+
+.fp-job-item:first-child {
+  border-top: 1px solid #eeeeee;
+}
+
+.fp-job-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fp-job-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #222222;
+  transition: color 0.2s ease;
+}
+
+.fp-job-item:hover .fp-job-title {
+  color: #C9A84C;
+}
+
+.fp-job-meta {
+  font-size: 12px;
+  font-weight: 300;
+  color: #888888;
+  letter-spacing: 0.04em;
+}
+
+.fp-job-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C9A84C;
+  border: 1px solid #C9A84C;
+  padding: 4px 10px;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.fp-job-item:hover .fp-job-tag {
+  background: #C9A84C;
+  color: #ffffff;
+}
+
+/* ── Safety Tips ────────────────────────────── */
+.fp-tips-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.fp-tip-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #eeeeee;
+  align-items: flex-start;
+}
+
+.fp-tip-item:first-child {
+  border-top: 1px solid #eeeeee;
+}
+
+.fp-tip-num {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #C9A84C;
+  min-width: 28px;
+  padding-top: 2px;
+}
+
+.fp-tip-body h3 {
+  font-size: 15px;
+  font-weight: 500;
+  color: #222222;
+  margin: 0 0 4px;
+}
+
+.fp-tip-body p {
+  font-size: 14px;
+  font-weight: 300;
+  color: #555555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Gov Links ──────────────────────────────── */
+.fp-gov-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.fp-gov-link {
+  font-size: 13px;
+  font-weight: 400;
+  color: #444444;
+  text-decoration: none;
+  border: 1px solid #dddddd;
+  padding: 8px 16px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.fp-gov-link:hover {
+  border-color: #C9A84C;
+  color: #C9A84C;
+}
+
+/* ── Policy Legal Sections ──────────────────── */
+.fp-policy-section {
+  margin-bottom: 36px;
+}
+
+.fp-policy-section:last-child {
+  margin-bottom: 0;
+}
+
+.fp-last-updated {
+  font-size: 12px;
+  font-weight: 300;
+  color: #aaaaaa;
+  letter-spacing: 0.04em;
+  margin-top: 12px;
+}
+
+/* ── Benefits List ──────────────────────────── */
+.fp-benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.fp-benefit-item {
+  padding: 16px;
+  border: 1px solid #eeeeee;
+  margin: -1px 0 0 -1px;
+}
+
+.fp-benefit-item strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #222222;
+  margin-bottom: 4px;
+}
+
+.fp-benefit-item span {
+  font-size: 13px;
+  font-weight: 300;
+  color: #666666;
+  line-height: 1.6;
+}
+
+/* ── Footer Mini ────────────────────────────── */
+.fp-footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  border-top: 1px solid #eeeeee;
+  font-size: 12px;
+  font-weight: 300;
+  color: #aaaaaa;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fp-footer a {
+  color: #aaaaaa;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.fp-footer a:hover {
+  color: #C9A84C;
+}
+
+/* ── Accessibility Focus ─────────────────────── */
+*:focus-visible {
+  outline: 2px solid #C9A84C;
+  outline-offset: 3px;
+}
+
+/* ── Responsive ─────────────────────────────── */
+@media (max-width: 600px) {
+  .fp-main {
+    padding: 40px 16px 60px;
+  }
+
+  .fp-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fp-partners-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fp-job-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .fp-topnav {
+    padding: 16px;
+  }
+}
