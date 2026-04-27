@@ -1,6 +1,6 @@
 # Compass and Co. - Travel Experience Platform
 
-**Live Demo:** [https://travel-rosy-omega.vercel.app](https://travel-rosy-omega.vercel.app)
+**Live Demo:** https://travel-lk6dsf45w-annanyaa03s-projects.vercel.app/
 
 ---
 
