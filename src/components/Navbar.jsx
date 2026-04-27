@@ -1,94 +1,363 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import './Navbar.css';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const DarkCompassIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="lux-compass-svg">
-    {/* Outer Circle - Dark */}
-    <circle cx="18" cy="18" r="17.5" fill="#1A1A14" className="lux-compass-bg" />
-    {/* Inner Ring */}
-    <circle cx="18" cy="18" r="14" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="0.5"/>
-    
-    {/* Cardinal Ticks */}
-    <line x1="18" y1="0.5" x2="18" y2="4.5" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="1"/>
-    <line x1="18" y1="31.5" x2="18" y2="35.5" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="0.75"/>
-    <line x1="31.5" y1="18" x2="35.5" y2="18" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="0.75"/>
-    <line x1="0.5" y1="18" x2="4.5" y2="18" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="0.75"/>
-    
-    {/* South Needle (Gold) */}
-    <path d="M18,29.5 L16.9,19.2 L18,18.6 L19.1,19.2 Z" fill="#C9972A" />
-    {/* North Needle (White) */}
-    <path d="M18,6.5 L19.1,16.8 L18,17.4 L16.9,16.8 Z" fill="#FFFFFF"/>
-    
-    <circle cx="18" cy="18" r="1.8" fill="#FFFFFF"/>
-    <circle cx="18" cy="18" r="0.8" fill="#C9972A"/>
-  </svg>
-);
+// Individual nav link component
+const NavLink = ({ link, isActive, navigate }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={() => navigate(link.path)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        fontSize: '11px',
+        fontWeight: '500',
+        letterSpacing: '0.12em',
+        fontFamily: 'Inter, sans-serif',
+        color: isActive
+          ? 'white'
+          : hovered
+          ? 'white'
+          : 'rgba(255,255,255,0.55)',
+        transition: 'color 0.2s ease',
+        padding: '4px 0',
+        position: 'relative',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {link.label}
+      {/* Active underline */}
+      {isActive && (
+        <div style={{
+          position: 'absolute',
+          bottom: '-2px',
+          left: 0,
+          right: 0,
+          height: '1px',
+          background: '#C9A84C'
+        }}/>
+      )}
+    </button>
+  );
+};
 
-const UserIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-  </svg>
-);
+// User avatar pill component
+const UserPill = ({ 
+  avatarUrl, initial, 
+  firstName, onClick 
+}) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        cursor: 'pointer',
+        padding: '4px 12px 4px 4px',
+        borderRadius: '999px',
+        border: hovered
+          ? '1px solid #C9A84C'
+          : '1px solid rgba(255,255,255,0.15)',
+        background: 'rgba(255,255,255,0.06)',
+        transition: 'all 0.2s ease'
+      }}
+    >
+      {/* Avatar */}
+      {avatarUrl ? (
+        <img
+          src={avatarUrl}
+          alt={firstName}
+          style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            objectFit: 'cover',
+            border: '1.5px solid #C9A84C'
+          }}
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      ) : (
+        <div style={{
+          width: '28px',
+          height: '28px',
+          borderRadius: '50%',
+          background: '#C9A84C',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          fontSize: '12px',
+          fontWeight: '600',
+          fontFamily: 'Inter, sans-serif',
+          flexShrink: 0
+        }}>
+          {initial}
+        </div>
+      )}
 
-export default function Navbar({ onLoginClick }) {
-  const location = useLocation();
+      {/* Name */}
+      <span style={{
+        fontSize: '12px',
+        fontWeight: '400',
+        color: 'white',
+        fontFamily: 'Inter, sans-serif',
+        letterSpacing: '0.02em',
+        maxWidth: '80px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+      }}>
+        {firstName}
+      </span>
+    </div>
+  );
+};
+
+// Small text button component
+const NavTextButton = ({ 
+  label, onClick, 
+  color, hoverColor, icon 
+}) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        fontSize: '11px',
+        fontWeight: '400',
+        letterSpacing: '0.1em',
+        fontFamily: 'Inter, sans-serif',
+        color: hovered ? hoverColor : color,
+        transition: 'color 0.2s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '5px',
+        padding: '4px 0',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {icon && (
+        <span style={{ fontSize: '13px' }}>
+          {icon}
+        </span>
+      )}
+      {label}
+    </button>
+  );
+};
+
+// Plan a Trip CTA button component
+const PlanATripButton = ({ onClick }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered
+          ? '#C9A84C' : '#1a1a1a',
+        color: 'white',
+        border: hovered
+          ? '1px solid #C9A84C'
+          : '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '999px',
+        padding: '10px 22px',
+        fontSize: '11px',
+        fontWeight: '500',
+        letterSpacing: '0.1em',
+        fontFamily: 'Inter, sans-serif',
+        cursor: 'pointer',
+        whiteSpace: 'nowrap',
+        transition: 'all 0.25s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px'
+      }}
+    >
+      PLAN A TRIP
+      <span style={{ fontSize: '12px' }}>→</span>
+    </button>
+  );
+};
+
+const Navbar = () => {
+  const { user, signOut, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (location.pathname === '/' && window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
+  const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+  const firstName = fullName.split(' ')[0];
+  const initial = firstName.charAt(0).toUpperCase();
+  const avatarUrl = user?.user_metadata?.avatar_url;
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check once on mount/location change
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [location.pathname]);
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
-  const isActive = (path) => location.pathname === path;
-  const isHomePage = location.pathname === '/';
-  const navClass = (isHomePage && !isScrolled) ? 'lux-nav-hero' : '';
+  const navLinks = [
+    { label: 'HOME', path: '/' },
+    { label: 'DESTINATIONS', path: '/destinations' },
+    { label: 'HOTELS', path: '/hotels' },
+    { label: 'FLIGHTS', path: '/flights' },
+    { label: 'EXPERIENCES', path: '/experiences' },
+    { label: 'BLOG', path: '/blog' }
+  ];
+
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   return (
-    <nav id="lux-nav-fixed" className={navClass}>
-      <div className="lux-nav-container">
-        
-        {/* Left Section: Brand */}
-        <Link to="/" className="lux-nav-left">
-          <DarkCompassIcon />
-          <span className="lux-brand-name">
-            Compass <span className="lux-ampersand">&amp;</span> Co.
-          </span>
-        </Link>
+    <nav style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 999,
+      background: 'rgba(15,15,15,0.95)',
+      backdropFilter: 'blur(12px)',
+      borderBottom: '1px solid rgba(255,255,255,0.06)',
+      padding: '0 40px',
+      height: '64px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '16px'
+    }}>
 
-        {/* Center Section: Links */}
-        <div className="lux-nav-center">
-          <Link to="/" className={`lux-nav-link ${isActive('/') ? 'lux-active' : ''}`}>Home</Link>
-          <Link to="/destinations" className={`lux-nav-link ${isActive('/destinations') ? 'lux-active' : ''}`}>Destinations</Link>
-          <Link to="/hotels" className={`lux-nav-link ${isActive('/hotels') ? 'lux-active' : ''}`}>Hotels</Link>
-          <Link to="/flights" className={`lux-nav-link ${isActive('/flights') ? 'lux-active' : ''}`}>Flights</Link>
-          <Link to="/experiences" className={`lux-nav-link ${isActive('/experiences') ? 'lux-active' : ''}`}>Experiences</Link>
-          <Link to="/blog" className={`lux-nav-link ${isActive('/blog') ? 'lux-active' : ''}`}>Blog</Link>
+      {/* ── LEFT: LOGO ── */}
+      <div
+        onClick={() => navigate('/')}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          cursor: 'pointer',
+          flexShrink: 0
+        }}
+      >
+        {/* Compass icon */}
+        <div style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          border: '1px solid rgba(255,255,255,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          fontSize: '14px'
+        }}>
+          ⊕
         </div>
+        <span style={{
+          fontFamily: 'Fraunces, Georgia, serif',
+          fontSize: '18px',
+          fontWeight: '400',
+          color: 'white',
+          whiteSpace: 'nowrap',
+          letterSpacing: '-0.01em'
+        }}>
+          Compass & Co.
+        </span>
+      </div>
 
-        {/* Right Section: Actions */}
-        <div className="lux-nav-right">
-          <button className="lux-login-btn" onClick={onLoginClick || (() => navigate('/login'))}>
-            <UserIcon /> Login
-          </button>
-          
-          <Link to="/concierge-plan" className="lux-cta-pill">
-            <span>Plan a trip</span>
-            <span className="lux-cta-arrow">→</span>
-          </Link>
-        </div>
+      {/* ── CENTER: NAV LINKS ── */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '28px',
+        flex: 1,
+        justifyContent: 'center'
+      }}>
+        {navLinks.map(link => (
+          <NavLink
+            key={link.path}
+            link={link}
+            isActive={isActive(link.path)}
+            navigate={navigate}
+          />
+        ))}
+      </div>
 
+      {/* ── RIGHT: AUTH + CTA ── */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        flexShrink: 0
+      }}>
+        {isAuthenticated ? (
+          /* ── LOGGED IN ── */
+          <>
+            {/* User pill: avatar + name */}
+            <UserPill
+              avatarUrl={avatarUrl}
+              initial={initial}
+              firstName={firstName}
+              onClick={() => navigate('/dashboard')}
+            />
+
+            {/* Dashboard link */}
+            <NavTextButton
+              label="Dashboard"
+              onClick={() => navigate('/dashboard')}
+              color="rgba(255,255,255,0.7)"
+              hoverColor="#C9A84C"
+            />
+
+            {/* Divider */}
+            <div style={{
+              width: '1px',
+              height: '14px',
+              background: 'rgba(255,255,255,0.15)'
+            }}/>
+
+            {/* Sign out */}
+            <NavTextButton
+              label="Sign out"
+              onClick={handleSignOut}
+              color="rgba(255,255,255,0.4)"
+              hoverColor="#ef4444"
+            />
+          </>
+        ) : (
+          /* ── LOGGED OUT ── */
+          <>
+            {/* Login */}
+            <NavTextButton
+              label="Login"
+              onClick={() => navigate('/login')}
+              color="rgba(255,255,255,0.65)"
+              hoverColor="white"
+              icon="👤"
+            />
+          </>
+        )}
+
+        {/* ── PLAN A TRIP button ── */}
+        <PlanATripButton
+          onClick={() => navigate('/destinations')}
+        />
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;

@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
     }),
     signOut: () => supabase.auth.signOut(),
     user,
+    isAuthenticated: !!user,
   };
 
   return (

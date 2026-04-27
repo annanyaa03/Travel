@@ -1,18 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { 
+  FiGrid, 
+  FiMap, 
+  FiHeart, 
+  FiFileText, 
+  FiNavigation, 
+  FiHome, 
+  FiSettings, 
+  FiBell, 
+  FiGlobe, 
+  FiBookOpen, 
+  FiLogOut, 
+  FiChevronRight,
+  FiPlusCircle,
+  FiSearch
+} from 'react-icons/fi';
 
 // --- SUB-COMPONENTS ---
 
 const Sidebar = ({ activeTab, onTabChange, onSignOut, fullName, email, avatarUrl, initials, navigate }) => {
   const navItems = [
-    { id: 'overview',    icon: '⊞', label: 'Overview' },
-    { id: 'trips',       icon: '✈', label: 'My Trips' },
-    { id: 'wishlist',    icon: '♡', label: 'Wishlist' },
-    { id: 'bookings',    icon: '📋', label: 'Bookings' },
-    { id: 'flights',     icon: '🛫', label: 'Flights' },
-    { id: 'hotels',      icon: '🏨', label: 'Hotels' },
-    { id: 'settings',    icon: '⚙', label: 'Settings' }
+    { id: 'overview',    icon: <FiGrid size={18} />, label: 'Overview' },
+    { id: 'trips',       icon: <FiMap size={18} />, label: 'My Trips' },
+    { id: 'wishlist',    icon: <FiHeart size={18} />, label: 'Wishlist' },
+    { id: 'bookings',    icon: <FiFileText size={18} />, label: 'Bookings' },
+    { id: 'flights',     icon: <FiNavigation size={18} />, label: 'Flights' },
+    { id: 'hotels',      icon: <FiHome size={18} />, label: 'Hotels' },
+    { id: 'settings',    icon: <FiSettings size={18} />, label: 'Settings' }
   ];
 
   return (
@@ -26,12 +42,14 @@ const Sidebar = ({ activeTab, onTabChange, onSignOut, fullName, email, avatarUrl
       display: 'flex',
       flexDirection: 'column',
       color: 'white',
-      zIndex: 100
+      zIndex: 100,
+      bottom: 0,
+      overflowY: 'auto'
     }}>
       {/* Brand */}
       <div style={{ padding: '32px 28px 40px', cursor: 'pointer' }} onClick={() => navigate('/')}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '20px' }}>⊕</span>
+          <FiPlusCircle size={22} color="#C9A84C" />
           <span style={{ fontFamily: 'Fraunces, serif', fontSize: '18px', letterSpacing: '0.05em' }}>Compass</span>
         </div>
       </div>
@@ -86,7 +104,7 @@ const Sidebar = ({ activeTab, onTabChange, onSignOut, fullName, email, avatarUrl
               }
             }}
           >
-            <span style={{ fontSize: '16px' }}>{item.icon}</span>
+            <span style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
             <span>{item.label}</span>
           </div>
         ))}
@@ -108,7 +126,7 @@ const Sidebar = ({ activeTab, onTabChange, onSignOut, fullName, email, avatarUrl
           onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
           onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}
         >
-          <span>→</span>
+          <FiLogOut size={14} />
           <span>Sign out</span>
         </div>
       </div>
@@ -144,7 +162,7 @@ const TopBar = ({ greeting, firstName, date }) => (
         onMouseEnter={(e) => e.currentTarget.style.borderColor = '#C9A84C'}
         onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(0,0,0,0.07)'}
       >
-        🔔
+        <FiBell size={18} color="#4a4a4a" />
       </div>
     </div>
   </div>
@@ -183,10 +201,10 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
     <div>
       {/* Stats Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '48px' }}>
-        <StatCard icon="✈" label="Trips" number={bookings.length} trend="+0 this year" />
-        <StatCard icon="🌍" label="Countries" number="0" trend="Explored" />
-        <StatCard icon="♡" label="Wishlist" number={wishlist.length} trend="Saved places" />
-        <StatCard icon="📋" label="Bookings" number={bookings.filter(b => b.status === 'upcoming').length} trend="Upcoming" />
+        <StatCard icon={<FiNavigation size={20} color="#C9A84C" />} label="Trips" number={bookings.length} trend="+0 this year" />
+        <StatCard icon={<FiGlobe size={20} color="#C9A84C" />} label="Countries" number="0" trend="Explored" />
+        <StatCard icon={<FiHeart size={20} color="#C9A84C" />} label="Wishlist" number={wishlist.length} trend="Saved places" />
+        <StatCard icon={<FiFileText size={20} color="#C9A84C" />} label="Bookings" number={bookings.filter(b => b.status === 'upcoming').length} trend="Upcoming" />
       </div>
 
       {/* Two Column Row */}
@@ -203,7 +221,22 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
             {destinations.length > 0 ? destinations.map(dest => (
               <div key={dest.id} style={{ height: '160px', borderRadius: '14px', overflow: 'hidden', position: 'relative', cursor: 'pointer' }}>
-                <img src={dest.image} alt={dest.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} onMouseEnter={e => e.target.style.transform = 'scale(1.05)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'} />
+                <img 
+                  src={dest.image || dest.image_url} 
+                  alt={dest.name} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} 
+                  onMouseEnter={e => e.target.style.transform = 'scale(1.05)'} 
+                  onMouseLeave={e => e.target.style.transform = 'scale(1)'} 
+                  onError={(e) => {
+                    const fallbacks = {
+                      'Cusco': 'https://images.pexels.com/photos/3889891/pexels-photo-3889891.jpeg?auto=compress&cs=tinysrgb&w=1920',
+                      'Tbilisi': 'https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=1920',
+                      'Cartagena': 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=1920',
+                    };
+                    e.target.src = fallbacks[dest.name] || 'https://images.pexels.com/photos/1010657/pexels-photo-1010657.jpeg?auto=compress&cs=tinysrgb&w=1920';
+                    e.target.onerror = null;
+                  }}
+                />
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)' }} />
                 <div style={{ position: 'absolute', bottom: '12px', left: '12px', color: 'white' }}>
                   <div style={{ fontFamily: 'Fraunces, serif', fontSize: '16px' }}>{dest.name}</div>
@@ -225,10 +258,10 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
           <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', marginBottom: '24px' }}>Quick Actions</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {[
-              { icon: '✈', label: 'Search Flights', path: '/flights' },
-              { icon: '🏨', label: 'Find Hotels', path: '/hotels' },
-              { icon: '🌍', label: 'Browse Destinations', path: '/destinations' },
-              { icon: '📖', label: 'Read Travel Journal', path: '/blog' }
+              { icon: <FiSearch />, label: 'Search Flights', path: '/flights' },
+              { icon: <FiHome />, label: 'Find Hotels', path: '/hotels' },
+              { icon: <FiGlobe />, label: 'Browse Destinations', path: '/destinations' },
+              { icon: <FiBookOpen />, label: 'Read Travel Journal', path: '/blog' }
             ].map(action => (
               <div
                 key={action.label}
@@ -258,10 +291,10 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ fontSize: '20px' }}>{action.icon}</span>
+                  <span style={{ display: 'flex', alignItems: 'center' }}>{action.icon}</span>
                   <span style={{ fontFamily: 'Fraunces, serif', fontSize: '14px' }}>{action.label}</span>
                 </div>
-                <span className="arrow" style={{ color: '#9e9e9e', transition: 'all 0.2s ease' }}>→</span>
+                <span className="arrow" style={{ color: '#9e9e9e', transition: 'all 0.2s ease' }}><FiChevronRight /></span>
               </div>
             ))}
           </div>
@@ -272,7 +305,7 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
       <div style={{ display: 'grid', gridTemplateColumns: '6fr 4fr', gap: '48px' }}>
         {/* Recent Activity */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px', background: 'white', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: '64px', marginBottom: '24px' }}>✈️</div>
+          <div style={{ marginBottom: '24px' }}><FiNavigation size={48} color="#C9A84C" /></div>
           <h3 style={{ fontFamily: 'Fraunces, serif', fontSize: '18px', color: '#4a4a4a', margin: '0 0 12px' }}>Your journey begins here</h3>
           <p style={{ color: '#9e9e9e', fontSize: '13px', margin: 0, textAlign: 'center', maxWidth: '280px' }}>
             Start exploring destinations, saving hotels, and booking your dream trips.
@@ -282,7 +315,7 @@ const OverviewTab = ({ user, destinations, bookings, wishlist, currentQuote, quo
         {/* Travel Quote */}
         <div style={{ background: '#0f0f0f', borderRadius: '20px', padding: '36px 32px', position: 'relative', overflow: 'hidden', minHeight: '260px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div style={{ transition: 'opacity 0.5s ease', opacity: 1 }}>
-            <blockquote style={{ margin: 0, fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: '300', fontStyle: italic, color: 'white', lineHeight: '1.6', marginBottom: '20px' }}>
+            <blockquote style={{ margin: 0, fontFamily: 'Fraunces, serif', fontSize: '20px', fontWeight: '300', fontStyle: 'italic', color: 'white', lineHeight: '1.6', marginBottom: '20px' }}>
               "{quotes[currentQuote].text}"
             </blockquote>
             <div style={{ fontSize: '12px', color: '#C9A84C', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
@@ -402,9 +435,9 @@ const SettingsTab = ({ user, avatarUrl, initials, fullName, activeToggles, setAc
   );
 };
 
-const EmptyTab = ({ emoji, title, description, btnLabel, onBtnClick }) => (
+const EmptyTab = ({ icon, title, description, btnLabel, onBtnClick }) => (
   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0' }}>
-    <div style={{ fontSize: '64px', marginBottom: '24px' }}>{emoji}</div>
+    <div style={{ marginBottom: '24px' }}>{icon}</div>
     <h2 style={{ fontFamily: 'Fraunces, serif', fontSize: '24px', margin: '0 0 12px' }}>{title}</h2>
     <p style={{ color: '#9e9e9e', fontSize: '14px', margin: '0 0 32px', maxWidth: '320px', textAlign: 'center' }}>{description}</p>
     <button
@@ -436,6 +469,36 @@ const quotes = [
   { text: "To travel is to live.", author: "Hans Christian Andersen" },
   { text: "Life is short and the world is wide.", author: "Simon Raven" },
   { text: "Adventure is worthwhile in itself.", author: "Amelia Earhart" }
+];
+
+const fallbackDestinations = [
+  {
+    id: 'f1',
+    name: 'Santorini',
+    city: 'Santorini',
+    country: 'Greece',
+    category: 'Europe',
+    slug: 'santorini-greece',
+    image: 'https://images.pexels.com/photos/1010657/pexels-photo-1010657.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
+  },
+  {
+    id: 'f2',
+    name: 'Kyoto',
+    city: 'Kyoto',
+    country: 'Japan',
+    category: 'Asia',
+    slug: 'kyoto-japan',
+    image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
+  },
+  {
+    id: 'f3',
+    name: 'Maldives',
+    city: 'Malé',
+    country: 'Maldives',
+    category: 'Islands',
+    slug: 'maldives',
+    image: 'https://images.pexels.com/photos/1287460/pexels-photo-1287460.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
+  }
 ];
 
 const Dashboard = () => {
@@ -477,10 +540,23 @@ const Dashboard = () => {
 
   // Fetch featured destinations
   useEffect(() => {
-    fetch('/api/destinations?featured=true&limit=3')
-      .then(r => r.json())
-      .then(d => setDestinations(d.data || []))
-      .catch(() => {});
+    const fetchDestinations = async () => {
+      try {
+        const res = await fetch('/api/destinations?featured=true&limit=3');
+        const data = await res.json();
+        
+        if (data.data && data.data.length > 0) {
+          // Filter out entries with clearly broken/missing images if any
+          const validDests = data.data.filter(d => d.image_url || d.image);
+          setDestinations(validDests.length > 0 ? validDests : fallbackDestinations);
+        } else {
+          setDestinations(fallbackDestinations);
+        }
+      } catch (err) {
+        setDestinations(fallbackDestinations);
+      }
+    };
+    fetchDestinations();
   }, []);
 
   // Rotate quotes
@@ -497,7 +573,15 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#FAF9F6', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div style={{ 
+      display: 'flex', 
+      minHeight: '100vh', 
+      width: '100%',
+      position: 'relative',
+      background: '#FAF9F6', 
+      fontFamily: 'Inter, system-ui, sans-serif',
+      overflow: 'hidden'
+    }}>
       {/* SIDEBAR */}
       <Sidebar
         activeTab={activeTab}
@@ -530,7 +614,7 @@ const Dashboard = () => {
             )}
             {activeTab === 'trips' && (
               <EmptyTab
-                emoji="✈️"
+                icon={<FiNavigation size={64} color="#C9A84C" />}
                 title="No trips planned yet"
                 description="Start exploring and save your dream destinations to build your first trip."
                 btnLabel="Browse Destinations"
@@ -539,7 +623,7 @@ const Dashboard = () => {
             )}
             {activeTab === 'wishlist' && (
               <EmptyTab
-                emoji="♡"
+                icon={<FiHeart size={64} color="#C9A84C" />}
                 title="Your wishlist is empty"
                 description="Heart destinations you love while browsing to save them here."
                 btnLabel="Explore Destinations"
@@ -548,7 +632,7 @@ const Dashboard = () => {
             )}
             {activeTab === 'bookings' && (
               <EmptyTab
-                emoji="📋"
+                icon={<FiFileText size={64} color="#C9A84C" />}
                 title="No bookings yet"
                 description="Start planning your first trip with our curated collections."
                 btnLabel="Search Hotels"
