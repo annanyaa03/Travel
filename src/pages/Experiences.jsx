@@ -13,7 +13,7 @@ const EXPERIENCES_DATA = [
     desc: 'Witness the Great Migration from an exclusive, undiscovered luxury camp.',
     tip: 'Best migration views in August.',
     meters: { adventure: 90, exclusivity: 80, relaxation: 20 },
-    link: 'https://www.andbeyond.com/safari-destinations/africa/tanzania/serengeti/'
+    link: 'https://www.serengeti.com/safari-lodges-and-camps.php'
   },
   {
     id: 'e2',
@@ -26,7 +26,7 @@ const EXPERIENCES_DATA = [
     desc: 'Truffle hunting, private wine tastings, and cooking with Michelin-starred chefs.',
     tip: 'Private truffle hunting included.',
     meters: { adventure: 20, exclusivity: 70, relaxation: 60 },
-    link: 'https://www.cookingclassesinflorence.com'
+    link: 'https://tuscookany.com/'
   },
   {
     id: 'e3',
@@ -39,7 +39,7 @@ const EXPERIENCES_DATA = [
     desc: 'Explore untouched ice formations with seasoned polar explorers.',
     tip: 'Helicopter access to remote glaciers.',
     meters: { adventure: 100, exclusivity: 95, relaxation: 10 },
-    link: 'https://www.hurtigruten.com/en-us/expeditions/antarctica/'
+    link: 'https://ultima-antarcticexpeditions.com/'
   },
   {
     id: 'e4',
@@ -52,7 +52,7 @@ const EXPERIENCES_DATA = [
     desc: 'Private tea ceremonies, exclusive temple access, and ryokan wellness immersion.',
     tip: 'Exclusive after-hours temple access.',
     meters: { adventure: 10, exclusivity: 85, relaxation: 100 },
-    link: 'https://www.sykioto.com/en/'
+    link: 'https://kyoto.travel/en/travel-inspiration/reconnect-with-your-senses-at-a-zen-temple/'
   },
   {
     id: 'e5',
@@ -65,7 +65,7 @@ const EXPERIENCES_DATA = [
     desc: 'Sail the Indian Ocean in absolute privacy on a 120ft luxury gulet.',
     tip: 'Comes with a private onboard chef.',
     meters: { adventure: 30, exclusivity: 90, relaxation: 100 },
-    link: 'https://www.fourseasons.com/maldives/yachts/'
+    link: 'https://www.yachtmaldives.com/'
   },
   {
     id: 'e6',
@@ -78,7 +78,7 @@ const EXPERIENCES_DATA = [
     desc: 'Luxury eco-domes nestled beneath the towering peaks of Torres del Paine.',
     tip: 'Stargazing from your private dome.',
     meters: { adventure: 80, exclusivity: 60, relaxation: 70 },
-    link: 'https://www.ecocamp.travel'
+    link: 'https://patagoniaglamping.com/'
   }
 ];
 
