@@ -53,8 +53,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 6. Routes
-app.use('/api', routes);
-app.use('/api/ai', aiRoutes);
+app.use(['/api', '/'], routes);
+app.use(['/api/ai', '/ai'], aiRoutes);
 
 // Root route for testing
 app.get('/', (req, res) => {
