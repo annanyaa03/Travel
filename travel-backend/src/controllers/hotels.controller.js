@@ -1,15 +1,39 @@
 import supabase from '../config/supabase.js';
 import * as hotelService from '../services/hotels.service.js';
+import { z } from 'zod';
+
+const searchSchema = z.object({
+  city: z.string().min(1).default('Paris'),
+  stars: z.string().optional(),
+  type: z.string().optional(),
+  minPrice: z.string().optional().default('0'),
+  maxPrice: z.string().optional().default('10000')
+});
 
 export const searchHotels = async (req, res) => {
   try {
-    const { 
-      city = 'Paris',
+    const parsed = searchSchema.safeParse(req.query);
+    
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid query parameters',
+        errors: parsed.error.format()
+      });
+    }
+
+    let { 
+      city,
       stars,
       type,
-      minPrice = 0,
-      maxPrice = 10000
-    } = req.query;
+      minPrice,
+      maxPrice
+    } = parsed.data;
+
+    // Sanitize city: remove trailing junk like :1, emojis, or symbols
+    // Keep only letters, spaces, and hyphens
+    city = city.replace(/[:\d]+$/, '').replace(/[^\w\s-]/gi, '').trim();
+    if (!city) city = 'Paris'; // Fallback if sanitization empties it
 
     // Use the cached service logic instead of inline query for better performance and consistency
     const hotels = await hotelService.getCachedHotels(city);

@@ -33,6 +33,9 @@ const Hotels = () => {
   const performSearch = useCallback(async (targetCity) => {
     if (!targetCity) return;
     
+    // Sanitize targetCity: remove trailing junk like :1
+    const sanitizedCity = targetCity.replace(/[:\d]+$/, '').trim();
+    
     // Show skeletons IMMEDIATELY
     setLoading(true);
     setHasSearched(true);
@@ -40,19 +43,26 @@ const Hotels = () => {
     setHotels([]); // Clear old results instantly
     
     try {
-      const res = await fetch(`/api/hotels/search?city=${encodeURIComponent(targetCity)}`);
+      const res = await fetch(`/api/hotels/search?city=${encodeURIComponent(sanitizedCity)}`);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(`Server error: ${res.status}`);
+      }
+
       const data = await res.json();
       
       if (data.success) {
         setHotels(data.data.hotels || []);
         setCityInfo(data.data.cityInfo);
-        setSearchCity(targetCity);
+        setSearchCity(sanitizedCity);
       } else {
         throw new Error(data.message || 'Failed to fetch hotels');
       }
     } catch (err) {
       console.error("Search error:", err);
-      setError(err.message);
+      setError(err.message || "Something went wrong while searching for hotels.");
     } finally {
       setLoading(false);
     }
