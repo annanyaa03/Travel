@@ -6,7 +6,7 @@ dotenv.config();
 const envSchema = z.object({
   PORT: z.string().default('5000'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  FRONTEND_URL: z.string().url(),
+  FRONTEND_URL: z.string().url().optional(),
   
   SUPABASE_URL: z.string().url(),
   SUPABASE_ANON_KEY: z.string(),
@@ -23,7 +23,7 @@ const envSchema = z.object({
   SMTP_PASS: z.string(),
   EMAIL_FROM: z.string(),
   
-  REDIS_URL: z.string().url(),
+  REDIS_URL: z.string().url().optional(),
   REDIS_PASSWORD: z.string().optional(),
   
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly']).default('info'),
@@ -32,13 +32,17 @@ const envSchema = z.object({
   CACHE_TTL_DESTINATIONS: z.string().transform(Number).default('600'),
   CACHE_TTL_SEARCH: z.string().transform(Number).default('300'),
   CACHE_TTL_ANALYTICS: z.string().transform(Number).default('300'),
+  RAPIDAPI_KEY: z.string().optional(),
+  RAPIDAPI_HOST: z.string().optional(),
+  OPENAI_API_KEY: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
-  console.error('❌ Invalid environment variables:', JSON.stringify(parsedEnv.error.format(), null, 2));
-  process.exit(1);
+  console.error('⚠️ Some environment variables are missing or invalid:', JSON.stringify(parsedEnv.error.format(), null, 2));
+  // In serverless environments, we don't want to process.exit(1) as it kills the instance.
+  // We'll proceed with what we have, but things might fail later if critical vars are missing.
 }
 
-export const env = parsedEnv.data;
+export const env = parsedEnv.success ? parsedEnv.data : process.env;

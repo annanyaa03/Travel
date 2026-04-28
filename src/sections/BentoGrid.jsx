@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '../supabase';
 import './BentoGrid.css';
 
 const CATEGORIES = ['All', 'Europe', 'Asia', 'Middle East', 'Africa', 'Islands', 'America'];
@@ -241,14 +242,12 @@ export default function BentoGrid() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/destinations?limit=100');
-      if (!response.ok) throw new Error(`Server returned ${response.status}`);
-      const json = await response.json();
-      if (json.success && json.data) {
-        setDestinations(json.data);
-      } else {
-        throw new Error(json.message || 'Failed to parse data');
-      }
+      const { data, error } = await supabase
+        .from('destinations')
+        .select('*')
+        .limit(100);
+      if (error) throw error;
+      setDestinations(data || []);
     } catch (err) {
       setError(err.message || 'Failed to connect');
     } finally {
