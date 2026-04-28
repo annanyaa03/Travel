@@ -84,7 +84,7 @@ export const fetchHotelsFromDB = async (city) => {
 };
 
 // Keep existing export for compatibility if needed, but point to the new logic
-export const searchHotelsFromDB = async (params) => {
-  return fetchHotelsFromDB(params.city);
+export const searchHotelsFromDB = async ({ city, checkIn, checkOut, guests }) => {
+  return fetchHotelsFromDB(city);
 };
 

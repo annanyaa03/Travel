@@ -33,17 +33,15 @@ const Hotels = () => {
   const performSearch = useCallback(async (targetCity) => {
     if (!targetCity) return;
     
-    // Sanitize and correctly build query parameters
+    // 1. Sanitize and build query parameters safely
     const sanitizedCity = targetCity.trim().replace(/:\d+$/, '');
-    const sanitizedCheckIn = '2024-12-01'; 
-    const sanitizedCheckOut = '2024-12-05';
-    const sanitizedGuests = 2;
-
+    
+    // Use URLSearchParams to compose URL safely as requested
     const params = new URLSearchParams({
       city: sanitizedCity,
-      checkIn: sanitizedCheckIn,
-      checkOut: sanitizedCheckOut,
-      guests: sanitizedGuests.toString(),
+      checkIn: '2024-12-01', // ISO formatted YYYY-MM-DD
+      checkOut: '2024-12-05',
+      guests: '2'           // Integer only
     });
 
     const url = `/api/hotels/search?${params.toString()}`;
@@ -56,9 +54,10 @@ const Hotels = () => {
     try {
       const res = await fetch(url);
       
+      // 2. Improved Error Handling: Check res.ok before parsing JSON
       if (!res.ok) {
-        const text = await res.text(); // For debugging
-        console.error('API error response:', text);
+        const errText = await res.text();
+        console.error('API error:', errText);
         setError('Failed to load hotels. Please try again.');
         setLoading(false);
         return;
@@ -66,7 +65,9 @@ const Hotels = () => {
 
       const data = await res.json();
       
-      setHotels(data.data?.hotels || data.data || []);
+      // Handle data structure (support both data.data and data)
+      const hotelsData = data.data?.hotels || data.data || [];
+      setHotels(hotelsData);
       setCityInfo(data.data?.cityInfo || null);
       setSearchCity(sanitizedCity);
       

@@ -15,33 +15,32 @@ const searchSchema = z.object({
 
 export const searchHotels = async (req, res) => {
   try {
-    // 1. Sanitize and parse basic query parameters
+    // 1. Sanitize and validate query parameters
     const city = (req.query.city || '').trim().replace(/:\d+$/, '');
+    if (!city) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'City required' 
+      });
+    }
+
     const checkIn = req.query.checkIn;
     const checkOut = req.query.checkOut;
     const guests = parseInt(req.query.guests, 10) || 2;
 
-    // 2. Validate required parameters
-    if (!city) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'City is required' 
-      });
-    }
-
-    // 3. Additional sanitization for city to prevent malformed queries
+    // 2. Additional sanitization for city to prevent malformed queries
     const sanitizedCity = city.replace(/[^\w\s-]/gi, '').trim();
     if (!sanitizedCity) {
       return res.status(400).json({ 
         success: false, 
-        message: 'City parameter contains invalid characters' 
+        error: 'City parameter contains invalid characters' 
       });
     }
 
-    // 4. Fetch hotels from service
+    // 3. Fetch hotels from service with all params
     const hotels = await hotelService.getCachedHotels(sanitizedCity);
 
-    // 5. Apply filters (stars, type, price)
+    // 4. Apply additional filters if present
     let filteredHotels = [...hotels];
     
     if (req.query.stars) {
@@ -70,10 +69,10 @@ export const searchHotels = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Search API error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Internal server error'
+    console.error('Hotels search error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error' 
     });
   }
 };
