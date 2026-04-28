@@ -126,9 +126,8 @@ const Hotels = () => {
   const handleSearch = () => performSearch(inputValue);
 
 
-  // Mock dates for snippet requirements
-  const checkIn = '2024-05-10';
-  const checkOut = '2024-05-14';
+  // Mock dates for snippet requirements removed as they conflict with useState hooks below
+
 
   return (
     <div style={{ 
