@@ -33,12 +33,20 @@ const Hotels = () => {
   const performSearch = useCallback(async (targetCity) => {
     if (!targetCity) return;
     
-    const checkIn = '2024-12-01';
-    const checkOut = '2024-12-05';
-    const guests = 2;
-
+    // Sanitize and correctly build query parameters
     const sanitizedCity = targetCity.trim().replace(/:\d+$/, '');
-    const url = `/api/hotels/search?city=${encodeURIComponent(sanitizedCity)}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`;
+    const sanitizedCheckIn = '2024-12-01'; 
+    const sanitizedCheckOut = '2024-12-05';
+    const sanitizedGuests = 2;
+
+    const params = new URLSearchParams({
+      city: sanitizedCity,
+      checkIn: sanitizedCheckIn,
+      checkOut: sanitizedCheckOut,
+      guests: sanitizedGuests.toString(),
+    });
+
+    const url = `/api/hotels/search?${params.toString()}`;
     
     setLoading(true);
     setHasSearched(true);
@@ -49,9 +57,9 @@ const Hotels = () => {
       const res = await fetch(url);
       
       if (!res.ok) {
-        const text = await res.text();
+        const text = await res.text(); // For debugging
         console.error('API error response:', text);
-        setError('Failed to load hotels');
+        setError('Failed to load hotels. Please try again.');
         setLoading(false);
         return;
       }
@@ -64,7 +72,7 @@ const Hotels = () => {
       
     } catch (err) {
       console.error("Search error:", err);
-      setError("Failed to load hotels");
+      setError("Failed to load hotels. Please try again.");
     } finally {
       setLoading(false);
     }

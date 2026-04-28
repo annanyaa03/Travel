@@ -15,77 +15,65 @@ const searchSchema = z.object({
 
 export const searchHotels = async (req, res) => {
   try {
-    // Manually sanitize city param before parsing
-    let rawCity = (req.query.city || '').trim().replace(/:\d+$/, '');
-    if (req.query.city) {
-      req.query.city = rawCity;
-    }
+    // 1. Sanitize and parse basic query parameters
+    const city = (req.query.city || '').trim().replace(/:\d+$/, '');
+    const checkIn = req.query.checkIn;
+    const checkOut = req.query.checkOut;
+    const guests = parseInt(req.query.guests, 10) || 2;
 
-    const parsed = searchSchema.safeParse(req.query);
-    
-    if (!parsed.success) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid query parameters',
-        errors: parsed.error.format()
+    // 2. Validate required parameters
+    if (!city) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'City is required' 
       });
     }
 
-    let { 
-      city,
-      stars,
-      type,
-      minPrice,
-      maxPrice,
-      checkIn,
-      checkOut,
-      guests
-    } = parsed.data;
-
-    if (!city) {
-      return res.status(400).json({ success: false, message: 'City is required' });
+    // 3. Additional sanitization for city to prevent malformed queries
+    const sanitizedCity = city.replace(/[^\w\s-]/gi, '').trim();
+    if (!sanitizedCity) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'City parameter contains invalid characters' 
+      });
     }
 
-    // Sanitize further
-    city = city.replace(/[^\w\s-]/gi, '').trim();
-    if (!city) {
-      return res.status(400).json({ success: false, message: 'City parameter contains invalid characters' });
-    }
+    // 4. Fetch hotels from service
+    const hotels = await hotelService.getCachedHotels(sanitizedCity);
 
-    const hotels = await hotelService.getCachedHotels(city);
-
+    // 5. Apply filters (stars, type, price)
     let filteredHotels = [...hotels];
     
-    if (stars) {
-      filteredHotels = filteredHotels.filter(h => h.stars === parseInt(stars));
+    if (req.query.stars) {
+      filteredHotels = filteredHotels.filter(h => h.stars === parseInt(req.query.stars));
     }
-    if (type) {
-      filteredHotels = filteredHotels.filter(h => h.type === type);
+    if (req.query.type) {
+      filteredHotels = filteredHotels.filter(h => h.type === req.query.type);
     }
-    if (minPrice) {
-      filteredHotels = filteredHotels.filter(h => h.pricePerNight >= parseFloat(minPrice));
+    if (req.query.minPrice) {
+      filteredHotels = filteredHotels.filter(h => h.pricePerNight >= parseFloat(req.query.minPrice));
     }
-    if (maxPrice) {
-      filteredHotels = filteredHotels.filter(h => h.pricePerNight <= parseFloat(maxPrice));
+    if (req.query.maxPrice) {
+      filteredHotels = filteredHotels.filter(h => h.pricePerNight <= parseFloat(req.query.maxPrice));
     }
 
-    const cityInfo = getCityInfo(city);
+    const cityInfo = getCityInfo(sanitizedCity);
 
     return res.status(200).json({
       success: true,
       data: {
         hotels: filteredHotels,
         total: filteredHotels.length,
-        city: city,
+        city: sanitizedCity,
         cityInfo: cityInfo
       }
     });
 
   } catch (error) {
-    console.error('Error fetching hotels:', error);
+    console.error('Search API error:', error);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Server error'
+      message: 'Internal server error'
     });
   }
 };
